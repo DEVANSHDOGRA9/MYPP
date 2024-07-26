@@ -127,8 +127,8 @@ if (empty($_SESSION['csrf_token'])) {
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error(xhr.responseText);
-                            $('#form-message').html('<div class="alert alert-danger" role="alert">There was an error while submitting the form.</div>');
+                            errormessage = xhr + status + error;
+                            $('#form-message').html('<div class="alert alert-danger" role="alert">There was an error while submitting the form. '+errormessage+'</div>');
                         },
                         // complete: function() {
                         //     // Hide loader after AJAX request completes

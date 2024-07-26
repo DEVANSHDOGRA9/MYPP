@@ -1,12 +1,13 @@
 <?php
 // session_start(); // Ensure session is started
+$PAGE_TITLE = "Login";
 include 'header.php';
 // Generate and set CSRF token if not already set
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
-$PAGE_TITLE = "Login"; // Set the dynamic page title
+ // Set the dynamic page title
 
 // Debug: Log the CSRF token
 // error_log("Session CSRF Token in login.php: " . $csrf_token);
@@ -19,35 +20,38 @@ $PAGE_TITLE = "Login"; // Set the dynamic page title
       <!-- <h2>Login</h2>
       <p>Welcome back! Please log in to access your account.</p> -->
       <img src="http://localhost/clonnnneee/MYPP/resources/4957136_4957136.jpg" class="img-fluid" alt="Login Image">
-
     </div>
     <!-- Right Column with Form -->
     <div class="col-md-6 d-flex align-items-center">
-    <div class=" p-5 w-100">
-      <h2>Login</h2>
-      <form id="loginForm">
-        <div class="form-group mb-3">
-          <label for="email" class="required">Email:</label>
-          <input type="email" class="form-control" id="email" name="email" required>
-          <span class="error-message" id="email-error"></span>
-        </div>
-        <div class="form-group mb-3">
-          <label for="pwd" class="required">Password:</label>
-          <div class="input-group">
-            <input type="password" class="form-control" id="pwd" name="pwd" required>
-            <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-              <i class="fa fa-eye"></i> <!-- Font Awesome eye icon -->
-            </button>
+      <div class="p-5 w-100">
+        <h2>Login</h2>
+        <form id="loginForm">
+          <div class="form-group mb-3">
+            <label for="email" class="required">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <span class="error-message" id="email-error"></span>
           </div>
-          <span class="error-message" id="pwd-error"></span>
+          <div class="form-group mb-3">
+            <label for="pwd" class="required">Password:</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="pwd" name="pwd" required>
+              <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                <i class="fa fa-eye"></i> <!-- Font Awesome eye icon -->
+              </button>
+            </div>
+            <span class="error-message" id="pwd-error"></span>
+          </div>
+          
+          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <!-- Forgot Password Link -->
+        <div class="mt-3">
+          <a href="forgot_password.php">Forgot Password?</a>
         </div>
-        
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-      <!-- Response Div -->
-      <div id="response" class="mt-3"></div>
-</div>
+        <!-- Response Div -->
+        <div id="response" class="mt-3"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -59,8 +63,11 @@ $PAGE_TITLE = "Login"; // Set the dynamic page title
 
 <script>
   $(document).ready(function() {
+    
     // Toggle password visibility
     $("#togglePassword").on('click', function() {
+      
+      $('#loader').fadeIn();
       var passwordField = $("#pwd");
       var passwordIcon = $(this).find('i');
       if (passwordField.attr('type') === 'password') {
@@ -121,7 +128,10 @@ $PAGE_TITLE = "Login"; // Set the dynamic page title
             } else {
               $("#response").html('<div class="alert alert-danger" role="alert">' + response + '</div>');
             }
-          }
+          },
+          complete: function() {
+                        $('#loader').fadeIn();
+                    }
         });
       }
     });

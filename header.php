@@ -28,7 +28,8 @@ session_start();
         }
 
         #loader img {
-            margin-top: 20%; /* Adjusted to center the image vertically */
+            /* margin-top: 20%;  */
+            margin-top:12%;
         }
 
         /* CSS for form spacing */

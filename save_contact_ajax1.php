@@ -135,7 +135,7 @@ if ($formValid) {
             throw new Exception('Mailer Error: ' . $mail->ErrorInfo);
         } else {
             // Save form data to database
-            $stmt = $conn->prepare("INSERT INTO task4 (contact_name, contact_email, contact_message, contact_file) VALUES (?, ?, ?, ?)");
+            $stmt = $mysqli->prepare("INSERT INTO task4 (contact_name, contact_email, contact_message, contact_file) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $name, $email, $message, $file_name);
 
             if ($stmt->execute()) {

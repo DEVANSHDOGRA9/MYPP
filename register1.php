@@ -15,9 +15,9 @@ if (empty($_SESSION['csrf_token'])) {
 ?>
 
 <style>
-    .loader {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
+    /* .loader {
+        border: 16px solid #f3f3f3; 
+        border-top: 16px solid #3498db; 
         border-radius: 50%;
         width: 120px;
         height: 120px;
@@ -27,14 +27,14 @@ if (empty($_SESSION['csrf_token'])) {
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
-    }
+    } */
 
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 
-    .loader-wrapper {
+    /* .loader-wrapper {
         position: fixed;
         top: 0;
         left: 0;
@@ -45,8 +45,8 @@ if (empty($_SESSION['csrf_token'])) {
         justify-content: center;
         align-items: center;
         z-index: 1000;
-        display: none;
-    }
+        display: none; */
+    /* } */
 </style>
 
 <div class="container mt-5">
@@ -112,17 +112,18 @@ if (empty($_SESSION['csrf_token'])) {
 </div>
 
 <!-- Loader Wrapper -->
-<div class="loader-wrapper">
+<!-- <div class="loader-wrapper">
     <div class="loader"></div>
-</div>
+</div> -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready (function() {
         $('#registrationForm').on('submit', function(e) {
             e.preventDefault();
             // Show the loader
-            $('.loader-wrapper').show();
+            // $('.loader-wrapper').show();
+            $('#loader').fadeIn();
             // Reset all errors
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').empty();
@@ -216,11 +217,11 @@ if (empty($_SESSION['csrf_token'])) {
                         $('#responseMessage').html('<div class="alert alert-danger">An error occurred: ' + errorMessage + '. Please try again later.</div>');
                     },
                     complete: function() {
-                        $('.loader-wrapper').hide();
+                        $('#loader').fadeIn();
                     }
                 });
             } else {
-                $('.loader-wrapper').hide();
+                // $('.loader-wrapper').hide();
             }
         });
 
