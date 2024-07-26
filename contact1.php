@@ -5,13 +5,13 @@ include_once 'header.php';
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 } ?>
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title>Contact Us</title> -->
 
     <style>
         .required::after {
@@ -142,5 +142,6 @@ if (empty($_SESSION['csrf_token'])) {
             });
         });
     </script>
-</body>
-</html>
+    <?php include_once(__DIR__ . '/footer.php'); ?>
+<!-- </body>
+</html> -->

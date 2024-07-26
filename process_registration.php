@@ -27,9 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
 
     // Retrieve form data and sanitize
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $first_name = mysqli_real_escape_string($mysqli, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($mysqli, $_POST['last_name']);
+    $email = mysqli_real_escape_string($mysqli, $_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if email already exists
     $check_query = "SELECT id, is_email_verified FROM users_info WHERE email = '$email'";
-    $result = mysqli_query($conn, $check_query);
+    $result = mysqli_query($mysqli, $check_query);
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['temp_otp'] = $otp; // Save OTP in session
 
             try {
-                resendOTP($conn, $email, $otp);
+                resendOTP($mysqli, $email, $otp);
                 // Respond with JSON for successful OTP resend
                 $response["redirect"] = 'verifyotp.php';
                 header('Content-Type: application/json');
@@ -101,9 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert data into the database
     $sql = "INSERT INTO users_info (first_name, last_name, email, password) VALUES ('$first_name', '$last_name', '$email', '$hashed_password')";
 
-    if (mysqli_query($conn, $sql)) {
+    if (mysqli_query($mysqli, $sql)) {
         // Save last inserted ID in session
-        $_SESSION['temp_user_id'] = mysqli_insert_id($conn);
+        $_SESSION['temp_user_id'] = mysqli_insert_id($mysqli);
 
         // Generate random 6-digit OTP
         $otp = mt_rand(100000, 999999);
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['temp_otp'] = $otp;
 
         try {
-            sendOTP($conn, $email, $otp);
+            sendOTP($mysqli, $email, $otp);
             // Respond with JSON for successful registration
             $response["redirect"] = 'verifyotp.php';
             header('Content-Type: application/json');
@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
         http_response_code(500);
-        echo 'Registration failed: ' . mysqli_error($conn);
+        echo 'Registration failed: ' . mysqli_error($mysqli);
         exit();
     }
 } else {
@@ -136,10 +136,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Close the connection
-mysqli_close($conn);
+mysqli_close($mysqli);
 
 // Function to resend OTP
-function resendOTP($conn, $email, $otp) {
+function resendOTP($mysqli, $email, $otp) {
     // PHPMailer initialization
     $mail = new PHPMailer(true);
 
@@ -167,7 +167,7 @@ function resendOTP($conn, $email, $otp) {
 }
 
 // Function to send OTP after registration
-function sendOTP($conn, $email, $otp) {
+function sendOTP($mysqli, $email, $otp) {
     // PHPMailer initialization
     $mail = new PHPMailer(true);
 

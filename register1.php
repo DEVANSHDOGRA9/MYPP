@@ -1,7 +1,7 @@
 <?php
 // Start session
-
-
+// session_start();
+include('config.php');
 // Set page title
 $PAGE_TITLE = "REGISTRATION";
 
@@ -12,7 +12,6 @@ include "header.php";
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-
 ?>
 
 <style>
@@ -53,7 +52,7 @@ if (empty($_SESSION['csrf_token'])) {
 <div class="container mt-5">
     <div class="row">
         <!-- Left Column with Image -->
-        <div class="col-md-6 ">
+        <div class="col-md-6">
             <h2>Contact Us</h2>
             <p>Feel free to reach out to us through any of the methods below:</p>
             <p><b>Email:</b> <a href="mailto:contact@orientaloutsourcing.com" style="text-decoration:underline; color: blue;">contact@orientaloutsourcing.com</a></p>
@@ -67,8 +66,8 @@ if (empty($_SESSION['csrf_token'])) {
                 <h2 class="text-left mb-4">Registration Form</h2>
                 <p><small class="text-muted">* Fields are mandatory</small></p>
                 <div id="responseMessage" class="mt-3"></div>
-                <form id="registrationForm" action="POST">
-                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                <form id="registrationForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     
                     <div class="form-group">
                         <label for="first_name">First Name<span class="text-danger">*</span></label>
@@ -180,11 +179,11 @@ if (empty($_SESSION['csrf_token'])) {
             if (isValid) {
                 $.ajax({
                     type: 'POST',
-                    url: 'process_registration.php', // Point to register.php for form submission
+                    url: 'process_registration.php', // Point to process_registration.php for form submission
                     data: $(this).serialize(),
                     success: function(response) {
                         if (response.redirect) {
-                            $('#responseMessage').html('<div class="alert alert-success">Registration successful! Redirecting...</div>');
+                            $('#responseMessage').html('<div class="alert alert-success">Registration successful! Redirecting... </div>');
                             setTimeout(function(){
                                 window.location.href = response.redirect;
                             }, 2000);
@@ -209,7 +208,7 @@ if (empty($_SESSION['csrf_token'])) {
                                 $('#confirm_password').addClass('is-invalid');
                                 $('#confirm_password_error').text(response.confirm_password);
                             }
-                            $('#responseMessage').html('<div class="alert alert-danger">Registration failed. Please check the form.</div>');
+                            $('#responseMessage').html('<div class="alert alert-danger">Registration failed.'+ response +' Please check the form.</div>');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -217,48 +216,36 @@ if (empty($_SESSION['csrf_token'])) {
                         $('#responseMessage').html('<div class="alert alert-danger">An error occurred: ' + errorMessage + '. Please try again later.</div>');
                     },
                     complete: function() {
-                        // Hide the loader
                         $('.loader-wrapper').hide();
                     }
                 });
             } else {
-                // Hide the loader
                 $('.loader-wrapper').hide();
             }
         });
 
         // Function to validate email format
         function isValidEmail(email) {
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
 
         // Toggle password visibility
         $('#togglePassword').on('click', function() {
-            var passwordField = $('#password');
-            var passwordFieldType = passwordField.attr('type');
-            if (passwordFieldType === 'password') {
-                passwordField.attr('type', 'text');
-                $(this).text('Hide');
-            } else {
-                passwordField.attr('type', 'password');
-                $(this).text('Show');
-            }
+            var type = $('#password').attr('type') === 'password' ? 'text' : 'password';
+            $('#password').attr('type', type);
+            $(this).text(type === 'password' ? 'Show' : 'Hide');
         });
 
-        // Toggle confirm password visibility
         $('#toggleConfirmPassword').on('click', function() {
-            var confirmPasswordField = $('#confirm_password');
-            var confirmPasswordFieldType = confirmPasswordField.attr('type');
-            if (confirmPasswordFieldType === 'password') {
-                confirmPasswordField.attr('type', 'text');
-                $(this).text('Hide');
-            } else {
-                confirmPasswordField.attr('type', 'password');
-                $(this).text('Show');
-            }
+            var type = $('#confirm_password').attr('type') === 'password' ? 'text' : 'password';
+            $('#confirm_password').attr('type', type);
+            $(this).text(type === 'password' ? 'Show' : 'Hide');
         });
     });
 </script>
 
-<?php include "footer.php"; ?>
+<?php
+// Include footer
+include "footer.php";
+?>
