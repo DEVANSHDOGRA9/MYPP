@@ -116,14 +116,14 @@ if (empty($_SESSION['csrf_token'])) {
     <div class="loader"></div>
 </div> -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script>
     $(document).ready (function() {
         $('#registrationForm').on('submit', function(e) {
             e.preventDefault();
             // Show the loader
             // $('.loader-wrapper').show();
-            $('#loader').fadeIn();
+            // $('#loader').fadeIn();
             // Reset all errors
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').empty();
@@ -216,9 +216,9 @@ if (empty($_SESSION['csrf_token'])) {
                         var errorMessage = xhr.status + ': ' + xhr.statusText + ' - ' + xhr.responseText;
                         $('#responseMessage').html('<div class="alert alert-danger">An error occurred: ' + errorMessage + '. Please try again later.</div>');
                     },
-                    complete: function() {
-                        $('#loader').fadeIn();
-                    }
+                    // complete: function() {
+                    //     $('#loader').fadeOut();
+                    // }
                 });
             } else {
                 // $('.loader-wrapper').hide();

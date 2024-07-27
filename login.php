@@ -7,7 +7,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
- // Set the dynamic page title
+// Set the dynamic page title
 
 // Debug: Log the CSRF token
 // error_log("Session CSRF Token in login.php: " . $csrf_token);
@@ -36,7 +36,7 @@ $csrf_token = $_SESSION['csrf_token'];
             <div class="input-group">
               <input type="password" class="form-control" id="pwd" name="pwd" required>
               <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                <i class="fa fa-eye"></i> <!-- Font Awesome eye icon -->
+                Show
               </button>
             </div>
             <span class="error-message" id="pwd-error"></span>
@@ -56,26 +56,22 @@ $csrf_token = $_SESSION['csrf_token'];
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script> <!-- Font Awesome JS -->
 
 <script>
   $(document).ready(function() {
-    
     // Toggle password visibility
     $("#togglePassword").on('click', function() {
-      
-      $('#loader').fadeIn();
       var passwordField = $("#pwd");
-      var passwordIcon = $(this).find('i');
       if (passwordField.attr('type') === 'password') {
         passwordField.attr('type', 'text');
-        passwordIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+        $(this).text('Hide');
       } else {
         passwordField.attr('type', 'password');
-        passwordIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+        $(this).text('Show');
       }
     });
 
@@ -123,15 +119,12 @@ $csrf_token = $_SESSION['csrf_token'];
             if (response === 'success') {
                 setTimeout(() => {
                     window.location.href = "profile.php";
-                }, 2000);
+                }, 1000);
             
             } else {
               $("#response").html('<div class="alert alert-danger" role="alert">' + response + '</div>');
             }
-          },
-          complete: function() {
-                        $('#loader').fadeIn();
-                    }
+          }
         });
       }
     });
@@ -154,23 +147,21 @@ $csrf_token = $_SESSION['csrf_token'];
     position: relative;
   }
   #togglePassword {
+    color:black;
     position: absolute;
     right: 0;
     top: 0;
     height: 100%;
-    z-index: 2;
-    border: none; /* Remove default button border */
+    z-index: 299;
+    border: ridge; /* Remove default button border */
     background: transparent; /* Make button background transparent */
-    padding: 0.5rem; /* Add padding to center the icon */
+    padding: 0.5rem; /* Add padding to center the text */
     display: flex;
     align-items: center;
     justify-content: center;
   }
   #pwd {
-    padding-right: 3rem; /* Space for the toggle button */
-  }
-  #togglePassword i {
-    color: #6c757d; /* Icon color */
+    padding-right: 5rem; /* Space for the toggle button */
   }
   .text-danger {
     color: red !important; /* Ensure error messages are styled in red */
