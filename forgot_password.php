@@ -10,14 +10,14 @@ include 'header.php'; // Include header at the start of the file
 // $csrf_token = $_SESSION['csrf_token'];
 ?>
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?php echo htmlspecialchars($PAGE_TITLE); ?></title>
+
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> Font Awesome CSS -->
   <style>
     body {
       display: flex;
@@ -102,7 +102,7 @@ include 'header.php'; // Include header at the start of the file
   <!-- Footer -->
   <?php include 'footer.php'; ?>
 
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
@@ -152,5 +152,5 @@ include 'header.php'; // Include header at the start of the file
 });
 
   </script>
-</body>
-</html>
+<!-- </body>
+</html> -->

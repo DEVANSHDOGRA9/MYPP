@@ -59,7 +59,7 @@ $csrf_token = $_SESSION['csrf_token'];
 <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script> <!-- Font Awesome JS -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script> Font Awesome JS -->
 
 <script>
   $(document).ready(function() {
@@ -147,14 +147,14 @@ $csrf_token = $_SESSION['csrf_token'];
     position: relative;
   }
   #togglePassword {
-    color:black;
+    color:whitesmoke;
     position: absolute;
     right: 0;
     top: 0;
     height: 100%;
     z-index: 299;
-    border: ridge; /* Remove default button border */
-    background: transparent; /* Make button background transparent */
+    border: ridge; 
+    background: blue; 
     padding: 0.5rem; /* Add padding to center the text */
     display: flex;
     align-items: center;
