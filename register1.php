@@ -47,6 +47,7 @@ if (empty($_SESSION['csrf_token'])) {
         z-index: 1000;
         display: none; */
     /* } */
+    
 </style>
 
 <div class="container mt-5">
@@ -91,8 +92,9 @@ if (empty($_SESSION['csrf_token'])) {
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">Show</button>
                             </div>
-                        </div>
+                        
                         <div id="password_error" class="invalid-feedback"></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="confirm_password">Confirm Password<span class="text-danger">*</span></label>
@@ -101,8 +103,9 @@ if (empty($_SESSION['csrf_token'])) {
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">Show</button>
                             </div>
-                        </div>
+                       
                         <div id="confirm_password_error" class="invalid-feedback"></div>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Register</button>
                 </form>
