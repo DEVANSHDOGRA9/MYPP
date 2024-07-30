@@ -9,8 +9,9 @@ function sanitize_input($data) {
 // Function to establish database connection
 function get_db_connection() {
     include 'config.php';
+    $mysqli = new mysqli($servername, $username, $password, $dbname);
     if ($mysqli->connect_error) {
-        die('Database connection failed');
+        die('Database connection failed: ' . $mysqli->connect_error);
     }
     return $mysqli;
 }
@@ -33,11 +34,11 @@ $password = sanitize_input($_POST['pwd']);
 $mysqli = get_db_connection();
 
 // Prepare and execute the SQL query
-$query = "SELECT password, is_email_verified FROM users_info WHERE email = ?";
+$query = "SELECT id, password, is_email_verified FROM users_info WHERE email = ?";
 $stmt = $mysqli->prepare($query);
 
 if (!$stmt) {
-    echo 'Database query preparation failed';
+    echo 'Database query preparation failed: ' . $mysqli->error;
     $mysqli->close();
     exit;
 }
@@ -54,8 +55,8 @@ if ($stmt->num_rows === 0) {
     exit;
 }
 
-// Fetch the password hash and email verification status
-$stmt->bind_result($hashed_password, $is_email_verified);
+// Fetch the user ID, password hash, and email verification status
+$stmt->bind_result($user_id, $hashed_password, $is_email_verified);
 $stmt->fetch();
 $stmt->close();
 
@@ -68,8 +69,8 @@ if ($is_email_verified != 1) {
 
 // Verify the password
 if (password_verify($password, $hashed_password)) {
-    // Set session variable or any other login logic
-    $_SESSION['user_id'] = $email; // Example session variable
+    // Set session variable for user ID
+    $_SESSION['user_id'] = $user_id; // Use user ID from database
     echo 'success'; // Respond with success
 } else {
     echo '<span class="error-response">Invalid email or password</span>'; // Respond with error
