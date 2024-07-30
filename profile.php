@@ -1,16 +1,15 @@
 <?php
 // session_start();
-$PAGE_TITLE = "Profile";
+$PAGE_TITLE="Profile";
 include 'header.php'; // Ensure this file includes the database connection
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
-
 // Check if user_id is set in session
 if (!isset($_SESSION['user_id'])) {
-    echo "<script> window.location.href ='login.php'; </script>"; // Redirect to login if user_id is not set
+    echo "<script> window.location.href ='login.php'; </script>";// Redirect to login if user_id is not set
     exit();
 }
 
@@ -57,28 +56,33 @@ mysqli_stmt_close($stmt);
 mysqli_close($mysqli);
 ?>
 
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title> -->
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
     <style>
         .profile-container {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
             gap: 20px;
+            flex-wrap: wrap;
             align-items: flex-start;
         }
         .profile-image {
-            flex: 1 1 100%; /* Take full width on small screens */
+            flex: 1 1 100%;
             text-align: center;
-            margin-bottom: 20px; /* Add margin for better spacing on small screens */
+            margin-bottom: 20px;
         }
         .profile-image img {
             border-radius: 50%;
-            width: 120px; /* Adjust size for smaller screens */
-            height: 120px; /* Adjust size for smaller screens */
+            width: 150px;
+            height: 150px;
             object-fit: cover;
         }
         .form-container {
-            flex: 1 1 100%; /* Take full width on small screens */
+            flex: 1 1 100%;
         }
         .skills-section {
             display: flex;
@@ -103,8 +107,6 @@ mysqli_close($mysqli);
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
-        /* Media Queries */
         @media (min-width: 576px) {
             .profile-image img {
                 width: 150px;
@@ -113,7 +115,7 @@ mysqli_close($mysqli);
         }
         @media (min-width: 768px) {
             .profile-container {
-                flex-wrap: nowrap; /* Prevent wrapping on medium screens and larger */
+                flex-wrap: nowrap;
             }
             .profile-image {
                 flex: 0 0 40%;
@@ -123,8 +125,7 @@ mysqli_close($mysqli);
             }
         }
     </style>
-</head>
-<body>
+
     <div class="container mt-5">
         <div class="d-flex justify-content-end mb-3">
             <a href="change_password.php" class="btn btn-secondary">Change Password</a>
@@ -143,7 +144,7 @@ mysqli_close($mysqli);
 
                 <!-- Right side: Profile Form -->
                 <div class="form-container">
-                    <div id="responseDiv" class="d-none"></div>
+                <div id="responseDiv" class="d-none"></div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -194,8 +195,8 @@ mysqli_close($mysqli);
                 </div>
             </div>
         </form>
+       
     </div>
-
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <script>
         $(document).ready(function() {
@@ -212,7 +213,7 @@ mysqli_close($mysqli);
                     processData: false,
                     success: function(response) {
                         try {
-                            var data = response; // Ensure JSON parsing
+                            var data = response;
                             var alertType = data.success ? 'success' : 'danger';
                             var responseMessage = '<div class="alert alert-' + alertType + '">' + data.message + '</div>';
                             
@@ -229,15 +230,16 @@ mysqli_close($mysqli);
                                 window.location.href = data.redirect;
                             }
                         } catch (e) {
+                            // console.error('Failed to parse response:', e);
                             $('#responseDiv').html('<div class="alert alert-danger">An error occurred while processing the response.</div>').removeClass("d-none");
                         }
                     },
                     error: function(xhr, status, error) {
+                        // console.error('AJAX Error:', status, error);
                         $('#responseDiv').html('<div class="alert alert-danger">An error occurred: ' + xhr.status + ' ' + xhr.statusText + '</div>').removeClass("d-none");
                     }
                 });
             });
         });
     </script>
-
-<?php include_once(__DIR__ . '/footer.php'); ?>
+    <?php include_once(__DIR__ . '/footer.php'); ?>
