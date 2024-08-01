@@ -19,7 +19,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <div class="col-md-6">
       <!-- <h2>Login</h2>
       <p>Welcome back! Please log in to access your account.</p> -->
-      <img src="http://localhost/clonnnneee/MYPP/resources/4957136_4957136.jpg" class="img-fluid" alt="Login Image">
+      <img src="resources\4957136_4957136.jpg" class="img-fluid" alt="Login Image">
     </div>
     <!-- Right Column with Form -->
     <div class="col-md-6 d-flex align-items-center">
