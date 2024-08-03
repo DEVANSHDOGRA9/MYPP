@@ -20,15 +20,20 @@ include "header.php";
         justify-content: center;
         align-items: center;
     }
+    .container1 {
+        height: 100%;
+        width: 100%;
+    }
     .verification-form {
         padding: 50px; /* Adjust padding to increase vertical height */
-        height: 300px; /* Set a fixed height value for the form box */
         border: 1px solid #ccc;
         border-radius: 10px;
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         width: 100%;
+        max-width: 500px; /* Set a maximum width for the form box */
         overflow: hidden; /* Prevent content overflow */
+        position: relative;
     }
     @media (max-width: 768px) {
         .verification-form {
@@ -43,11 +48,20 @@ include "header.php";
         color: red;
         margin-left: 5px;
     }
+    .alert {
+        margin-top: 15px;
+        position: absolute;
+        bottom: 20px; /* Position the message 20px above the bottom */
+        width: 100%;
+        left: 0;
+        right: 0;
+        padding: 10px 20px;
+    }
 </style>
 </head>
 <body>
     <div class="content">
-        <div class="container">
+        <div class="container1">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="verification-form">
@@ -98,7 +112,9 @@ include "header.php";
                         type: 'POST',
                         data: formData,
                         success: function(response) {
-                            $('#responseMessage').html(response); // Display server response
+                          $('#responseMessage').html(response);
+                          // $('#responseMessage').html('<div class="alert alert-success">OTP successfully verified!</div>');
+                          $('#otpVerificationForm')[0].reset(); // Clear the form
                         },
                         error: function(xhr, status, error) {
                             $('#responseMessage').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
