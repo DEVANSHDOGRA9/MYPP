@@ -1,6 +1,10 @@
 <?php 
 $PAGE_TITLE = "Verify OTP";
-include "header.php"; ?>
+include "header.php";
+// if (!isset($_SESSION['is_otp_verified'])) {
+//   echo "<script>window.location.href='forgot_password.php';</script>";
+//   exit();
+// } ?>
 
 <!-- <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +54,7 @@ include "header.php"; ?>
             <form id="otpVerificationForm">
               <div class="form-group">
                 <label for="otp">Enter OTP</label>
-                <input type="text" class="form-control" id="otp" name="otp" required>
+                <input type="text" class="form-control" id="otp" name="otp" >
               </div>
               <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
             </form>
@@ -63,7 +67,7 @@ include "header.php"; ?>
 
   <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
   <script>
     $(document).ready(function() {
       $('#otpVerificationForm').on('submit', function(event) {

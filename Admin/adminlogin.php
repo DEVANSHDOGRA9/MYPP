@@ -39,6 +39,16 @@ $csrf_token = $_SESSION['csrf_token'];
             z-index: 1000;
             width: 100px;
         }
+
+        #togglePassword {
+            position: absolute;
+            right: 0px;
+            height:35px;
+            top: 43px;
+            /* bottom:px; */
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -70,9 +80,10 @@ $csrf_token = $_SESSION['csrf_token'];
                                             <input type="email" class="form-control" id="email" name="email">
                                             <small class="text-danger" id="emailErr"></small>
                                         </div>
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-3 position-relative">
                                             <label for="password">Password: <span class="text-danger">*</span></label>
                                             <input type="password" class="form-control" id="password" name="password">
+                                            <button type="button" class="btn btn-outline-secondary password-toggle" id="togglePassword" style="height:35px">Show</button>
                                             <small class="text-danger" id="passwordErr"></small>
                                         </div>
                                         <button type="submit" class="btn btn-primary my-3">Login</button>
@@ -125,7 +136,7 @@ $csrf_token = $_SESSION['csrf_token'];
                                 if (response.status === 'success') {
                                     $('#responseMessage').html('<div class="alert alert-success">' + response.message + ' Redirecting...</div>');
                                     setTimeout(function() {
-                                        window.location.href = 'customers.php'; // Redirect to customers.php
+                                        window.location.href = 'dashboard.php'; // Redirect to customers.php
                                     }, 2000);
                                 } else {
                                     $('#responseMessage').html('<div class="alert alert-danger">' + response.message + '</div>');
@@ -142,6 +153,13 @@ $csrf_token = $_SESSION['csrf_token'];
                     var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     return re.test(email);
                 }
+
+                $('#togglePassword').on('click', function() {
+                    var passwordField = $('#password');
+                    var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+                    passwordField.attr('type', type);
+                    $(this).text(type === 'password' ? 'Show' : 'Hide');
+                });
             });
         </script>
 

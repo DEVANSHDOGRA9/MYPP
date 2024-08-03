@@ -2,6 +2,10 @@
 // session_start(); // Ensure session is started
 $PAGE_TITLE = "Reset Password";
 include 'header.php'; // Include header at the start of the file
+if (!isset($_SESSION['otp_email'])) {
+  echo "<script>window.location.href='forgot_password.php';</script>";
+  exit();
+}
 
 // Generate and set CSRF token if not already set
 if (empty($_SESSION['csrf_token'])) {

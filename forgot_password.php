@@ -3,6 +3,9 @@
 $PAGE_TITLE = "Forgot Password";
 include 'header.php'; // Include header at the start of the file
 
+
+
+
 // Generate and set CSRF token if not already set
 // if (empty($_SESSION['csrf_token'])) {
 //     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
