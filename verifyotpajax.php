@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     http_response_code(405);
     echo "Method not allowed.";
 }
-$_SESSION['is_otp_verified'];
+// $_SESSION['is_otp_verified'];
 // Close the connection
 mysqli_close($mysqli); // Use $mysqli
 ?>
