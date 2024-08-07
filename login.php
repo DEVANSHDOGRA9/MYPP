@@ -147,14 +147,14 @@ $csrf_token = $_SESSION['csrf_token'];
     position: relative;
   }
   #togglePassword {
-    color:whitesmoke;
+    /* color:whitesmoke; */
     position: absolute;
     right: 0;
     top: 0;
     height: 100%;
     z-index: 299;
-    border: ridge; 
-    background: blue; 
+    /* border: ridge;  */
+    /* background: blue;  */
     padding: 0.5rem; /* Add padding to center the text */
     display: flex;
     align-items: center;

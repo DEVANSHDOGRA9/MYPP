@@ -1,6 +1,11 @@
 <?php 
+session_start();
 include_once(__DIR__ . '/adminheader.php');
-
+if (!isset($_SESSION['admin_id'])) {
+//   header('Location: adminlogin.php');
+echo "<script>window.location.href='adminlogin.php';</script>";
+  exit();
+}
 ?> 
 
      
@@ -12,6 +17,6 @@ include_once(__DIR__ . '/adminheader.php');
 
       </div>
 <?php 
-include_once(__DIR__ . '/footer.php');
+include_once(__DIR__ . '/adminfooter.php');
 
 ?> 

@@ -7,6 +7,10 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
+if (!isset($_SESSION['otp_email'])) {
+  echo "<script>window.location.href='forgot_password.php';</script>";
+  exit();
+}
 ?>
 
 <style>

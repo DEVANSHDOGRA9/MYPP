@@ -28,7 +28,10 @@ if (empty($_SESSION['otp']) || empty($_SESSION['otp_email'])) {
 // Validate OTP
 if ($otp == $_SESSION['otp']) {
     // OTP is valid, proceed to reset password page
+    unset($_SESSION['otp']);
+    $_SESSION['is_otp_verified']=true;
     $response['success'] = 'OTP verified successfully';
+
     echo json_encode($response);
 } else {
     // OTP is invalid

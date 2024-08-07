@@ -50,8 +50,9 @@ try {
 
     if ($stmt->affected_rows > 0) {
         // Clear the OTP from the session
-        unset($_SESSION['otp']);
-        unset($_SESSION['otp_email']);
+        // unset($_SESSION['otp']);
+        // unset($_SESSION['otp_email']);
+        // unset($_SESSION['is_otp_verified']);
 
         $response['success'] = "Password has been reset successfully";
     } else {

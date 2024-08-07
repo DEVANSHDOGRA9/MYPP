@@ -2,7 +2,7 @@
 // session_start(); // Ensure session is started
 $PAGE_TITLE = "Reset Password";
 include 'header.php'; // Include header at the start of the file
-if (!isset($_SESSION['otp_email'])) {
+if (!isset($_SESSION['is_otp_verified']) || $_SESSION['is_otp_verified']!==true) {
   echo "<script>window.location.href='forgot_password.php';</script>";
   exit();
 }
@@ -149,7 +149,7 @@ footer {
 <?php include 'footer.php'; ?>
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script>
   function togglePassword(fieldId, toggleButton) {

@@ -2,6 +2,10 @@
 $PAGE_TITLE = "Customers";
 include_once(__DIR__ . '/adminheader.php');
 
+if (!isset($_SESSION['admin_id'])) {
+    echo "<script> window.location.href ='adminlogin.php'; </script>";
+    exit();
+}
 $query = "SELECT * FROM users_info";
 $result = $mysqli->query($query);
 
