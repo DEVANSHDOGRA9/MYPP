@@ -83,7 +83,8 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="phone">Phone Number:</label>
-                        <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>">
+                        <!-- <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>"> -->
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?php echo htmlspecialchars($phone); ?>" inputmode="numeric">
                         <div id="phone_error" class="error-message"></div>
                     </div>
                     <div class="form-group mb-3">
@@ -105,6 +106,12 @@
 
     <script>
         $(document).ready(function() {
+            $('#phone').on('input', function() {
+        var phone = $(this).val();
+        // Remove any non-digit characters
+        phone = phone.replace(/\D/g, '');
+        $(this).val(phone);
+    });
             $("#profileForm").on("submit", function(event) {
                 event.preventDefault();
 

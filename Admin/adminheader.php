@@ -103,6 +103,21 @@ include_once(__DIR__ . '/../config.php');
       .bd-mode-toggle .dropdown-menu .active .bi {
         display: block !important;
       }
+      #loader {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        #loader img {
+            margin-top: 12%;
+        }
     </style>
 
     
@@ -111,6 +126,13 @@ include_once(__DIR__ . '/../config.php');
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
   </head>
+
+  <div id="loader">
+        <img src="./lg.gif" alt="Loader">
+    </div>
+
+
+
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="check2" viewBox="0 0 16 16">
@@ -256,7 +278,7 @@ include_once(__DIR__ . '/../config.php');
               </a>
             </li>
             <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="dashboard.php">
+            <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="adminprofile.php">
                 <svg class="bi"><use xlink:href="#single-person"/></svg>
                 Profile
               </a>
@@ -347,3 +369,14 @@ include_once(__DIR__ . '/../config.php');
     </div>
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+<script>
+    $(document).ajaxStart(function() {
+                    $('#loader').fadeIn();
+                });
+
+                // Hide loader on AJAX stop
+                $(document).ajaxStop(function() {
+                    $('#loader').fadeOut();
+                });
+                </script>

@@ -49,14 +49,30 @@ $csrf_token = $_SESSION['csrf_token'];
             transform: translateY(-50%);
             cursor: pointer;
         }
+
+        #loader {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        #loader img {
+            margin-top: 12%;
+        }
     </style>
 </head>
 
 <body>
-    <div class="ajax-loader-container">
-        <!-- <img src="/images/ajax-loader.gif" class="ajax-loader" alt="Loading..."> -->
+    <div id="loader">
+        <img src="./lg.gif" alt="Loader">
     </div>
-    <div class="container">
+
 
         <!-- Outer Row -->
         <div class="row justify-content-center">
@@ -159,6 +175,16 @@ $csrf_token = $_SESSION['csrf_token'];
                     var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
                     passwordField.attr('type', type);
                     $(this).text(type === 'password' ? 'Show' : 'Hide');
+                });
+
+                // Show loader on AJAX start
+                $(document).ajaxStart(function() {
+                    $('#loader').fadeIn();
+                });
+
+                // Hide loader on AJAX stop
+                $(document).ajaxStop(function() {
+                    $('#loader').fadeOut();
                 });
             });
         </script>
