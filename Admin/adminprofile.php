@@ -1,11 +1,14 @@
     <?php
     session_start();
+    ob_start();  // Start output buffering
     $PAGE_TITLE = "Admin Profile";
     include 'adminheader.php';
 
     // include '../config.php';
+    // ob_start();
     if (!isset($_SESSION['admin_id'])) {
-        echo "<script> window.location.href ='adminlogin.php'; </script>";
+        // echo "<script> window.location.href ='adminlogin.php'; </script>";
+        header("Location: adminlogin.php");
         exit();
     }
     if (empty($_SESSION['csrf_token'])) {
@@ -26,83 +29,172 @@
     mysqli_stmt_close($stmt);
     ?>
 
+    
+    
     <style>
-        .profile-container { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
-        .profile-image { flex: 1 1 100%; text-align: center; margin-bottom: 20px; }
-        .profile-image img { border-radius: 50%; width: 150px; height: 150px; object-fit: cover; }
-        .form-container { flex: 1 1 100%; }
-        .skills-section { display: flex; flex-wrap: wrap; gap: 10px; }
-        .form-check { margin-right: 15px; }
-        #responseDiv { margin-top: 20px; padding: 15px; border-radius: 5px; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .required-star { color: red; margin-left: 5px; }
-        .error-message { color: red; font-size: 0.875em; margin-top: 0.25em; }
-        .profile-heading { margin-bottom: 20px; }
-        .change-password-btn { position: absolute; top: 4px; right: 20px; background-color: #007bff; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-        .change-password-btn:hover { background-color: #0056b3; }
-        @media (min-width: 576px) { .profile-image img { width: 150px; height: 150px; } }
-        @media (min-width: 768px) { .profile-container { flex-wrap: nowrap; } .profile-image { flex: 0 0 40%; } .form-container { flex: 0 0 60%; } }
-    </style>
+ .error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25em;
+}
 
-    <div class="container mt-5" style="position: relative;">
-        <button class="change-password-btn" onclick="window.location.href='adminchange_password.php'">Change Password</button>
-        <h2 class="profile-heading">Admin Profile</h2>
-        <form id="profileForm" method="post" enctype="multipart/form-data">
-            <div class="profile-container">
-                <div class="profile-image">
-                    <?php
-                    $profileImage = $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
-                    ?>
-                    <img id="profileImagePreview" src="<?php echo $profileImage; ?>" alt="Profile Image" class="img-thumbnail rounded-circle">
-                    <h3 class="mt-3"><?php echo htmlspecialchars($first_name) . ' ' . htmlspecialchars($last_name); ?></h3>
-                    <p class="mt-2"><?php echo htmlspecialchars($email); ?></p>
+.error {
+    color: red;
+    font-size: 0.875em;
+}
+
+.error-container {
+    margin-top: 5px;
+    color: red;
+}
+
+.required-star {
+    color: red;
+    margin-left: 5px;
+}
+
+.profile-and-password-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.profile-image-container {
+    flex-shrink: 0;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.content-container {
+    flex-grow: 1;
+}
+
+.profile-form-container, .password-form-container {
+    width: 50%;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .profile-and-password-container {
+        flex-direction: column;
+    }
+
+    .profile-image-container {
+        position: relative;
+        margin-bottom: 20px;
+    }
+}
+
+.password-field-container {
+    position: relative;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0px;
+    top: 30px;
+}
+
+#profileImagePreview {
+    height: 150px;
+    width: 150px;
+}
+  
+
+    </style>
+<div class="container mt-5">
+    <div class="profile-and-password-container d-flex">
+        <!-- Profile Image Container -->
+        <div class="profile-image-container">
+            <?php
+            $profileImage = $profile_image ? 'uploads/' . htmlspecialchars($profile_image) : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+            ?>
+            <img id="profileImagePreview" src="<?php echo $profileImage; ?>" alt="Profile Image" class="img-thumbnail rounded-circle">
+        </div>
+        
+        <!-- Content Container -->
+        <div class="content-container flex-grow-1">
+            <div class="row">
+                <!-- Admin Profile Section -->
+                <div class="col-md-6 profile-form-container pr-3">
+                    <h2 class="profile-heading">Admin Profile</h2>
+                    <form id="profileForm" method="post" enctype="multipart/form-data">
+                        <div id="responseDiv" class="d-none"></div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="first_name">First Name:<span class="required-star">*</span></label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>">
+                                    <div id="first_name_error" class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="last_name">Last Name:<span class="required-star">*</span></label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>">
+                                    <div id="last_name_error" class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="email">Email:<span class="required-star">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                            <div id="email_error" class="error-message"></div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="phone">Phone Number:</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?php echo htmlspecialchars($phone); ?>" inputmode="numeric">
+                            <div id="phone_error" class="error-message"></div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="address">Address:</label>
+                            <textarea class="form-control" id="address" name="address"><?php echo htmlspecialchars($address); ?></textarea>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="profile_image">Upload Profile Photo:</label>
+                            <input type="file" class="form-control" id="profile_image" name="profile_image">
+                            <div id="profile_image_error" class="error-message"></div>
+                            <input type="hidden" name="current_profile_image" value="<?php echo htmlspecialchars($profile_image); ?>">
+                        </div>
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                    </form>
                 </div>
-                <div class="form-container">
-                    <div id="responseDiv" class="d-none"></div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="first_name">First Name:<span class="required-star">*</span></label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>">
-                                <div id="first_name_error" class="error-message"></div>
-                            </div>
+
+                <!-- Password Form Container -->
+                <div class="col-md-6 password-form-container pl-3">
+                    <h2 class="password-heading">Change Password</h2>
+                    <div id="message" class="error-container"></div>
+                    <form id="changePasswordForm">
+                        <div class="mb-3 password-field-container">
+                            <label for="current_password" class="form-label">Current Password:<span class="required-star">*</span></label>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn" id="toggleCurrentPassword">Show</button>
+                            <div class="error-container" id="currentPasswordError"></div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="last_name">Last Name:<span class="required-star">*</span></label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>">
-                                <div id="last_name_error" class="error-message"></div>
-                            </div>
+                        <div class="mb-3 password-field-container">
+                            <label for="new_password" class="form-label">New Password:<span class="required-star">*</span></label>
+                            <input type="password" class="form-control" id="new_password" name="new_password">
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn" id="toggleNewPassword">Show</button>
+                            <div class="error-container" id="newPasswordError"></div>
                         </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="email">Email:<span class="required-star">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
-                        <div id="email_error" class="error-message"></div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="phone">Phone Number:</label>
-                        <!-- <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>"> -->
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?php echo htmlspecialchars($phone); ?>" inputmode="numeric">
-                        <div id="phone_error" class="error-message"></div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="address">Address:</label>
-                        <textarea class="form-control" id="address" name="address"><?php echo htmlspecialchars($address); ?></textarea>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="profile_image">Upload Profile Photo:</label>
-                        <input type="file" class="form-control" id="profile_image" name="profile_image">
-                        <div id="profile_image_error" class="error-message"></div>
-                        <input type="hidden" name="current_profile_image" value="<?php echo htmlspecialchars($profile_image); ?>">
-                    </div>
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <div class="mb-3 password-field-container">
+                            <label for="confirm_password" class="form-label">Confirm New Password:<span class="required-star">*</span></label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                            <button type="button" class="btn btn-outline-secondary password-toggle-btn" id="toggleConfirmPassword">Show</button>
+                            <div class="error-container" id="confirmPasswordError"></div>
+                        </div>
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
+</div>
+<?php include_once(__DIR__ . '/adminfooter.php'); ?>
+<?php ob_end_flush();  // End output buffering and send the output to the browser ?>
+
 
     <script>
         $(document).ready(function() {
@@ -189,6 +281,94 @@
                     }
                 });
             });
+
+            $("#changePasswordForm").on("submit", function(event) {
+            event.preventDefault();
+            var valid = true;
+
+            // Clear previous error messages
+            $(".error-container").html("");
+            $("#message").html(""); // Clear previous messages
+
+            // Validate current password
+            var currentPassword = $("#current_password").val().trim();
+            if (!currentPassword) {
+                $("#currentPasswordError").html("Please enter your current password.");
+                valid = false;
+            }
+
+            // Validate new password
+            var newPassword = $("#new_password").val().trim();
+            if (!newPassword) {
+                $("#newPasswordError").html("Please enter a new password.");
+                valid = false;
+            } else if (newPassword.length < 6) {
+                $("#newPasswordError").html("Your password must be at least 6 characters long.");
+                valid = false;
+            }
+
+            // Validate confirm password
+            var confirmPassword = $("#confirm_password").val().trim();
+            if (!confirmPassword) {
+                $("#confirmPasswordError").html("Please confirm your new password.");
+                valid = false;
+            } else if (confirmPassword !== newPassword) {
+                $("#confirmPasswordError").html("Passwords do not match.");
+                valid = false;
+            }
+
+            if (valid) {
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: 'adminprocesschange_password.php',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response === 'success') {
+                            $("#message").html('<div class="alert alert-success">Password changed successfully.</div>');
+                            setTimeout(function() {
+                                window.location.href = 'adminprofile.php';
+                            }, 2000); // Redirect after 2 seconds
+                        } else {
+                            $("#message").html('<div class="alert alert-danger">An error occurred: ' + response + '</div>');
+                        }
+                    }
+                });
+            }
+        });
+
+        function togglePasswordVisibility(inputId, buttonId) {
+            var input = document.getElementById(inputId);
+            var button = document.getElementById(buttonId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "Hide";
+            } else {
+                input.type = "password";
+                button.textContent = "Show";
+            }
+        }
+
+        $("#toggleCurrentPassword").click(function() {
+            togglePasswordVisibility("current_password", "toggleCurrentPassword");
+        });
+
+        $("#toggleNewPassword").click(function() {
+            togglePasswordVisibility("new_password", "toggleNewPassword");
+        });
+
+        $("#toggleConfirmPassword").click(function() {
+            togglePasswordVisibility("confirm_password", "toggleConfirmPassword");
+        });
+
+
+
+
+
+
+
+
         });
     </script>
-    <?php include_once(__DIR__ . '/adminfooter.php'); ?>
+    

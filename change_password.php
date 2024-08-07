@@ -1,5 +1,6 @@
 <?php
 // session_start();
+ob_start();
 $PAGE_TITLE = "Change Password";
 include 'header.php';
 
@@ -8,6 +9,12 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
+
+if (!isset($_SESSION['user_id'])) {
+    // echo "<script> window.location.href ='login.php'; </script>"; // Redirect to login if user_id is not set
+    header('Location: login.php');
+    exit();
+}
 ?>
 
 <style>
@@ -161,4 +168,5 @@ $csrf_token = $_SESSION['csrf_token'];
 
 <?php
 include 'footer.php';
+ob_end_flush();
 ?>

@@ -3,7 +3,7 @@
 $PAGE_TITLE = "Reset Password";
 include 'header.php'; // Include header at the start of the file
 if (!isset($_SESSION['is_otp_verified']) || $_SESSION['is_otp_verified']!==true) {
-  echo "<script>window.location.href='forgot_password.php';</script>";
+  // echo "<script>window.location.href='forgot_password.php';</script>";
   exit();
 }
 

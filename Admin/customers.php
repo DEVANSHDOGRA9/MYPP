@@ -1,10 +1,12 @@
 <?php
 session_start();
+ob_start(); 
 $PAGE_TITLE = "Customers";
 include_once(__DIR__ . '/adminheader.php');
 
 if (!isset($_SESSION['admin_id'])) {
-    echo "<script> window.location.href ='adminlogin.php'; </script>";
+    // echo "<script> window.location.href ='adminlogin.php'; </script>";
+    header("Location: adminlogin.php");
     exit();
 }
 $query = "SELECT * FROM users_info";
@@ -45,5 +47,6 @@ if ($result === false) {
     </div>
 <?php
 include_once(__DIR__ . '/adminfooter.php');
+ ob_end_flush();  // End output buffering and send the output to the browser 
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+ob_start(); 
 // session_start();
 $PAGE_TITLE = "Profile";
 include 'header.php'; // Ensure this file includes the database connection
@@ -9,7 +10,8 @@ if (empty($_SESSION['csrf_token'])) {
 $csrf_token = $_SESSION['csrf_token'];
 // Check if user_id is set in session
 if (!isset($_SESSION['user_id'])) {
-    echo "<script> window.location.href ='login.php'; </script>"; // Redirect to login if user_id is not set
+    // echo "<script> window.location.href ='login.php'; </script>"; // Redirect to login if user_id is not set
+    header('Location: login.php');
     exit();
 }
 
@@ -289,4 +291,6 @@ mysqli_close($mysqli);
         });
     });
 </script>
-<?php include_once(__DIR__ . '/footer.php'); ?>
+<?php include_once(__DIR__ . '/footer.php'); 
+ob_end_flush();
+?>

@@ -117,10 +117,10 @@ $csrf_token = $_SESSION['csrf_token'];
           success: function(response) {
             // Update the response div with the response message
             if (response === 'success') {
-                setTimeout(() => {
-                    window.location.href = "profile.php";
-                }, 1000);
-            
+              $("#response").html('<div class="alert alert-success" role="alert">Login successful! Redirecting...</div>');
+              setTimeout(() => {
+                window.location.href = "profile.php";
+              }, 1000);
             } else {
               $("#response").html('<div class="alert alert-danger" role="alert">' + response + '</div>');
             }

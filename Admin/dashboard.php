@@ -1,9 +1,10 @@
 <?php 
 session_start();
+ob_start(); 
 include_once(__DIR__ . '/adminheader.php');
 if (!isset($_SESSION['admin_id'])) {
-//   header('Location: adminlogin.php');
-echo "<script>window.location.href='adminlogin.php';</script>";
+  header('Location: adminlogin.php');
+// echo "<script>window.location.href='adminlogin.php';</script>";
   exit();
 }
 ?> 
@@ -18,5 +19,5 @@ echo "<script>window.location.href='adminlogin.php';</script>";
       </div>
 <?php 
 include_once(__DIR__ . '/adminfooter.php');
-
+ob_end_flush(); 
 ?> 
