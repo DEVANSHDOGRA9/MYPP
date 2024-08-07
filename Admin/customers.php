@@ -1,4 +1,5 @@
 <?php
+session_start();
 $PAGE_TITLE = "Customers";
 include_once(__DIR__ . '/adminheader.php');
 
