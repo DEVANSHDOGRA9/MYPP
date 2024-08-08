@@ -63,7 +63,9 @@ session_start();
                     <li class="nav-item">
                         <a class="nav-link" href="./contact1.php">Contact Us</a>
                     </li>
-                    
+                    <li class="nav-item">
+                    <a class="nav-link" href="./book-appointment.php">Book Appointment</a>
+                </li>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <!-- Show Profile link if user is logged in -->
                         <li class="nav-item">
