@@ -1,9 +1,23 @@
-    <?php
+<?php
     $PAGE_TITLE = "Book Appointment";
     include_once 'header.php';
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    } ?>
+    } 
+    
+
+    $query = "SELECT holiday_date FROM holiday_info";
+$result = mysqli_query($mysqli, $query);
+$holidays = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $holidays[] = $row['holiday_date'];
+}
+
+// Convert the array to a JSON format
+$holidaysJson = json_encode($holidays);
+    
+    
+    ?>
 
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/css/bootstrap.min.css"> -->
     <style>
@@ -112,6 +126,7 @@
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
     <script>
     $(document).ready(function() {
+        var holidays = <?php echo $holidaysJson; ?>;
     // Set the minimum date to tomorrow for both startDate and endDate fields
     var today = new Date();
     var tomorrow = new Date(today);
@@ -204,6 +219,13 @@
         // Validate booking date is not today or a past date
         if (startDate.toDateString() === currentDate.toDateString() || startDate < currentDate) {
             $('#startDate-error').text('Cannot book for today or a past date.');
+            isValid = false;
+        }
+
+        // Holiday Validation
+        var selectedDate = $('#startDate').val();
+        if (holidays.includes(selectedDate)) {
+            $('#startDate-error').text('Cannot book on holidays.');
             isValid = false;
         }
 
