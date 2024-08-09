@@ -140,13 +140,19 @@ if (count($_FILES['documents']['name']) > $maxFiles) {
     exit;
 }
 
+// Initialize fileinfo for MIME type detection
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+
 foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
     if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
         if ($_FILES['documents']['size'][$key] > $maxFileSize) {
             echo json_encode(['status' => 'error', 'message' => 'File size exceeds 10MB limit.']);
             exit;
         }
-        if (!in_array($_FILES['documents']['type'][$key], $allowedTypes)) {
+        
+        // Validate MIME type using finfo
+        $mimeType = finfo_file($finfo, $tmp_name);
+        if (!in_array($mimeType, $allowedTypes)) {
             echo json_encode(['status' => 'error', 'message' => 'Only PDF files are allowed.']);
             exit;
         }
@@ -169,6 +175,9 @@ foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
         exit;
     }
 }
+
+// Close the fileinfo resource
+finfo_close($finfo);
 
 // Send email
 $mail = new PHPMailer(true);

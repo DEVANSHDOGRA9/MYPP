@@ -1,57 +1,57 @@
-<?php
-$PAGE_TITLE = "Book Appointment";
-include_once 'header.php';
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-} ?>
+    <?php
+    $PAGE_TITLE = "Book Appointment";
+    include_once 'header.php';
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    } ?>
 
-<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/css/bootstrap.min.css"> -->
-<style>
-    .instructions {
-        color: blue !important; /* Use !important to override other styles */
-    }
-    .appointment-form {
-        margin-top: 50px;
-    }
-    .form-control-file,
-    .form-control {
-        display: block;
-        width: 100%;
-        height: calc(1.5em + .75rem + 2px);
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: .25rem;
-    }
-    .required-star {
-        color: red;
-        margin-left: 5px;
-    }
-    .error-message {
-        color: red;
-        font-size: 0.875em;
-    }
-    .form-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-    .form-group {
-        flex: 1 1 calc(50% - 1rem); /* Adjust as needed */
-    }
-</style>
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <img src="https://orientaloutsourcing.com/images/contact.png" alt="Contact Image" class="img-fluid">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/css/bootstrap.min.css"> -->
+    <style>
+        .instructions {
+            color: blue !important; /* Use !important to override other styles */
+        }
+        .appointment-form {
+            margin-top: 50px;
+        }
+        .form-control-file,
+        .form-control {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+        .required-star {
+            color: red;
+            margin-left: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .form-group {
+            flex: 1 1 calc(50% - 1rem); /* Adjust as needed */
+        }
+    </style>
+    </head>
+    <body>
+    <div class="container ">
+    <div class="row d-flex align-items-center">
+        <div class="col-md-6 d-flex justify-content-center">
+            <img src="https://orientaloutsourcing.com/images/contact.png" alt="Contact Image" class="img-fluid w-100">
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <!-- Alert container -->
             <div id="alert-container"></div>
 
@@ -69,22 +69,22 @@ if (empty($_SESSION['csrf_token'])) {
                     <span class="error-message" id="email-error"></span>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="startDate">Start Date <span class="required-star">*</span></label>
                         <input type="date" class="form-control" id="startDate" name="startDate">
                         <span class="error-message" id="startDate-error"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="startTime">Start Time <span class="required-star">*</span></label>
                         <input type="time" class="form-control" id="startTime" name="startTime">
                         <span class="error-message" id="startTime-error"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="endDate">End Date <span class="required-star">*</span></label>
                         <input type="date" class="form-control" id="endDate" name="endDate">
                         <span class="error-message" id="endDate-error"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="endTime">End Time <span class="required-star">*</span></label>
                         <input type="time" class="form-control" id="endTime" name="endTime">
                         <span class="error-message" id="endTime-error"></span>
@@ -105,18 +105,32 @@ if (empty($_SESSION['csrf_token'])) {
     </div>
 </div>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
-<script>
-$(document).ready(function() {
-    // Set the minimum date to today for both startDate and endDate fields
-    var today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-    $('#startDate').attr('min', today);
-    $('#endDate').attr('min', today);
-    
+
+
+
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
+    <script>
+    $(document).ready(function() {
+    // Set the minimum date to tomorrow for both startDate and endDate fields
+    var today = new Date();
+    var tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var tomorrowFormatted = tomorrow.toISOString().split('T')[0]; // Get tomorrow's date in YYYY-MM-DD format
+
+    $('#startDate').attr('min', tomorrowFormatted);
+    $('#endDate').attr('min', tomorrowFormatted);
+
+    // Sync endDate with startDate
+    $('#startDate').on('change', function() {
+        var startDateValue = $(this).val();
+        $('#endDate').val(startDateValue);
+        $('#endDate').attr('min', startDateValue);
+    });
+
     $('#appointmentForm').on('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
-        
+
         var isValid = true;
         var currentDate = new Date();
         var startDate = new Date($('#startDate').val() + 'T' + $('#startTime').val());
@@ -125,7 +139,7 @@ $(document).ready(function() {
         var officeClose = new Date(startDate.toDateString() + ' 18:30:00');
         var lunchStart = new Date(startDate.toDateString() + ' 14:00:00');
         var lunchEnd = new Date(startDate.toDateString() + ' 14:30:00');
-        
+
         // Clear previous errors and alerts
         $('.error-message').text('');
         $('#alert-container').html('');
@@ -159,6 +173,12 @@ $(document).ready(function() {
         }
         if ($('#endTime').val().trim() === '') {
             $('#endTime-error').text('End Time is required.');
+            isValid = false;
+        }
+
+        // New Validation: Ensure Start Date and End Date are the same
+        if ($('#startDate').val() !== $('#endDate').val()) {
+            $('#endDate-error').text('Start Date and End Date must be the same.');
             isValid = false;
         }
 
@@ -232,7 +252,6 @@ $(document).ready(function() {
                         setTimeout(function() {
                             $('.alert').alert('close');
                         }, 6000);
-                        // $('#appointmentForm')[0].reset();
                         $('#documents').val('');
                     } else {
                         $('#alert-container').html(
@@ -240,12 +259,12 @@ $(document).ready(function() {
                             response.message +
                             '</div>'
                         );
-                       
+                    
                         setTimeout(function() {
                             $('.alert').alert('close');
                         }, 6000);
                     }
-                         $('#appointmentForm')[0].reset();
+                        $('#appointmentForm')[0].reset();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $('#alert-container').html(
@@ -264,4 +283,4 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include_once(__DIR__ . '/footer.php'); ?>
+    <?php include_once(__DIR__ . '/footer.php'); ?>
