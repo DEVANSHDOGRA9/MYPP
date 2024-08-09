@@ -18,22 +18,21 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_tok
 }
 
 // Initialize variables for form data and errors
-$name = $email = $startDate = $startTime = $endDate = $endTime = "";
 $errors = [];
 
-// Function to sanitize input
-function test_input($data) {
-    return htmlspecialchars(stripslashes(trim($data)));
+// Function to sanitize input and escape SQL injection
+function test_input($data, $mysqli) {
+    return mysqli_real_escape_string($mysqli, htmlspecialchars(stripslashes(trim($data))));
 }
 
 // Get POST data
 if (isset($_POST['name'], $_POST['email'], $_POST['startDate'], $_POST['startTime'], $_POST['endDate'], $_POST['endTime'])) {
-    $name = test_input($_POST['name']);
-    $email = test_input($_POST['email']);
-    $startDate = test_input($_POST['startDate']);
-    $startTime = test_input($_POST['startTime']);
-    $endDate = test_input($_POST['endDate']);
-    $endTime = test_input($_POST['endTime']);
+    $name = test_input($_POST['name'], $mysqli);
+    $email = test_input($_POST['email'], $mysqli);
+    $startDate = test_input($_POST['startDate'], $mysqli);
+    $startTime = test_input($_POST['startTime'], $mysqli);
+    $endDate = test_input($_POST['endDate'], $mysqli);
+    $endTime = test_input($_POST['endTime'], $mysqli);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Missing required fields.']);
     exit;
@@ -91,22 +90,16 @@ if (!$startDateTimeObj || !$endDateTimeObj) {
 }
 
 // Check for holidays
-$holidayQuery = "SELECT * FROM holiday_info WHERE holiday_date = ?";
-$stmt = mysqli_prepare($mysqli, $holidayQuery);
-mysqli_stmt_bind_param($stmt, 's', $startDate);
-mysqli_stmt_execute($stmt);
-$holidayResult = mysqli_stmt_get_result($stmt);
+$holidayQuery = "SELECT * FROM holiday_info WHERE holiday_date = '$startDate'";
+$holidayResult = mysqli_query($mysqli, $holidayQuery);
 
 if (mysqli_num_rows($holidayResult) > 0) {
     $errors[] = 'Appointments cannot be booked on holidays.';
 }
 
 // Check for existing bookings
-$bookingQuery = "SELECT * FROM booking_info WHERE (booking_start_datetime BETWEEN ? AND ?) OR (booking_end_datetime BETWEEN ? AND ?) OR (booking_start_datetime <= ? AND booking_end_datetime >= ?)";
-$stmt = mysqli_prepare($mysqli, $bookingQuery);
-mysqli_stmt_bind_param($stmt, 'ssssss', $startDatetime, $endDatetime, $startDatetime, $endDatetime, $startDatetime, $endDatetime);
-mysqli_stmt_execute($stmt);
-$bookingResult = mysqli_stmt_get_result($stmt);
+$bookingQuery = "SELECT * FROM booking_info WHERE (booking_start_datetime BETWEEN '$startDatetime' AND '$endDatetime') OR (booking_end_datetime BETWEEN '$startDatetime' AND '$endDatetime') OR (booking_start_datetime <= '$startDatetime' AND booking_end_datetime >= '$endDatetime')";
+$bookingResult = mysqli_query($mysqli, $bookingQuery);
 
 if (mysqli_num_rows($bookingResult) > 0) {
     $errors[] = 'The selected time slot is already booked.';
@@ -119,11 +112,8 @@ if (!empty($errors)) {
 }
 
 // Insert booking info into the database
-$insertBookingQuery = "INSERT INTO booking_info (person_name, email_address, booking_start_datetime, booking_end_datetime, created_on) VALUES (?, ?, ?, ?, NOW())";
-$stmt = mysqli_prepare($mysqli, $insertBookingQuery);
-mysqli_stmt_bind_param($stmt, 'ssss', $name, $email, $startDatetime, $endDatetime);
-
-if (!mysqli_stmt_execute($stmt)) {
+$insertBookingQuery = "INSERT INTO booking_info (person_name, email_address, booking_start_datetime, booking_end_datetime, created_on) VALUES ('$name', '$email', '$startDatetime', '$endDatetime', NOW())";
+if (!mysqli_query($mysqli, $insertBookingQuery)) {
     echo json_encode(['status' => 'error', 'message' => 'Error booking appointment: ' . mysqli_error($mysqli)]);
     exit;
 }
@@ -149,7 +139,7 @@ foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
             echo json_encode(['status' => 'error', 'message' => 'File size exceeds 10MB limit.']);
             exit;
         }
-        
+
         // Validate MIME type using finfo
         $mimeType = finfo_file($finfo, $tmp_name);
         if (!in_array($mimeType, $allowedTypes)) {
@@ -158,10 +148,8 @@ foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
         }
         $filePath = 'uploads/' . basename($_FILES['documents']['name'][$key]);
         if (move_uploaded_file($tmp_name, $filePath)) {
-            $insertDocQuery = "INSERT INTO booking_documents_info (booking_id, document_path) VALUES (?, ?)";
-            $stmt = mysqli_prepare($mysqli, $insertDocQuery);
-            mysqli_stmt_bind_param($stmt, 'is', $bookingId, $filePath);
-            if (!mysqli_stmt_execute($stmt)) {
+            $insertDocQuery = "INSERT INTO booking_documents_info (booking_id, document_path) VALUES ('$bookingId', '$filePath')";
+            if (!mysqli_query($mysqli, $insertDocQuery)) {
                 echo json_encode(['status' => 'error', 'message' => 'Error uploading document: ' . mysqli_error($mysqli)]);
                 exit;
             }
@@ -221,5 +209,6 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo]);
 }
 
+// Close the database connection
 mysqli_close($mysqli);
 ?>
