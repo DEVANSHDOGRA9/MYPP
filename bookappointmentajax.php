@@ -20,19 +20,23 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_tok
 // Initialize variables for form data and errors
 $errors = [];
 
-// Function to sanitize input and escape SQL injection
-function test_input($data, $mysqli) {
-    return mysqli_real_escape_string($mysqli, htmlspecialchars(stripslashes(trim($data))));
+
+
+
+// Function to check if a file is a PDF based on its extension
+function is_pdf($filename) {
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    return strtolower($ext) === 'pdf';
 }
 
 // Get POST data
 if (isset($_POST['name'], $_POST['email'], $_POST['startDate'], $_POST['startTime'], $_POST['endDate'], $_POST['endTime'])) {
-    $name = test_input($_POST['name'], $mysqli);
-    $email = test_input($_POST['email'], $mysqli);
-    $startDate = test_input($_POST['startDate'], $mysqli);
-    $startTime = test_input($_POST['startTime'], $mysqli);
-    $endDate = test_input($_POST['endDate'], $mysqli);
-    $endTime = test_input($_POST['endTime'], $mysqli);
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $startDate = $_POST['startDate'];
+    $startTime = $_POST['startTime'];
+    $endDate = $_POST['endDate'];
+    $endTime = $_POST['endTime'];
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Missing required fields.']);
     exit;
@@ -111,66 +115,77 @@ if (!empty($errors)) {
     exit;
 }
 
-// Insert booking info into the database
-$insertBookingQuery = "INSERT INTO booking_info (person_name, email_address, booking_start_datetime, booking_end_datetime, created_on) VALUES ('$name', '$email', '$startDatetime', '$endDatetime', NOW())";
-if (!mysqli_query($mysqli, $insertBookingQuery)) {
-    echo json_encode(['status' => 'error', 'message' => 'Error booking appointment: ' . mysqli_error($mysqli)]);
-    exit;
-}
-$bookingId = mysqli_insert_id($mysqli);
+// Sanitize inputs just before using them in SQL queries
+$name = mysqli_real_escape_string($mysqli, $name);
+$email = mysqli_real_escape_string($mysqli, $email);
+$startDatetime = mysqli_real_escape_string($mysqli, $startDatetime);
+$endDatetime = mysqli_real_escape_string($mysqli, $endDatetime);
 
-// Handle file uploads
-$uploadedFiles = [];
-$allowedTypes = ['application/pdf'];
-$maxFiles = 5;
-$maxFileSize = 10 * 1024 * 1024; // 10MB
-
-if (count($_FILES['documents']['name']) > $maxFiles) {
-    echo json_encode(['status' => 'error', 'message' => 'You can upload a maximum of 5 files.']);
-    exit;
-}
-
-// Initialize fileinfo for MIME type detection
-$finfo = finfo_open(FILEINFO_MIME_TYPE);
-
-foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
-    if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-        if ($_FILES['documents']['size'][$key] > $maxFileSize) {
-            echo json_encode(['status' => 'error', 'message' => 'File size exceeds 10MB limit.']);
-            exit;
-        }
-
-        // Validate MIME type using finfo
-        $mimeType = finfo_file($finfo, $tmp_name);
-        if (!in_array($mimeType, $allowedTypes)) {
-            echo json_encode(['status' => 'error', 'message' => 'Only PDF files are allowed.']);
-            exit;
-        }
-        $filePath = 'uploads/' . basename($_FILES['documents']['name'][$key]);
-        if (move_uploaded_file($tmp_name, $filePath)) {
-            $insertDocQuery = "INSERT INTO booking_documents_info (booking_id, document_path) VALUES ('$bookingId', '$filePath')";
-            if (!mysqli_query($mysqli, $insertDocQuery)) {
-                echo json_encode(['status' => 'error', 'message' => 'Error uploading document: ' . mysqli_error($mysqli)]);
-                exit;
-            }
-            $uploadedFiles[] = $filePath;
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error moving uploaded file.']);
-            exit;
-        }
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'File upload error: ' . $_FILES['documents']['error'][$key]]);
-        exit;
-    }
-}
-
-// Close the fileinfo resource
-finfo_close($finfo);
-
-// Send email
-$mail = new PHPMailer(true);
+// Begin transaction
+mysqli_begin_transaction($mysqli);
 
 try {
+    // Insert booking info into the database
+    $insertBookingQuery = "INSERT INTO booking_info (person_name, email_address, booking_start_datetime, booking_end_datetime, created_on) VALUES ('$name', '$email', '$startDatetime', '$endDatetime', NOW())";
+    if (!mysqli_query($mysqli, $insertBookingQuery)) {
+        throw new Exception('Error booking appointment: ' . mysqli_error($mysqli));
+    }
+    $bookingId = mysqli_insert_id($mysqli);
+
+    // Handle file uploads if files are present
+    $uploadedFiles = [];
+
+    $maxFiles = 5;
+    $maxFileSize = 10 * 1024 * 1024; // 10MB
+
+    // Check if any files were uploaded
+    if (!empty($_FILES['documents']['name'][0])) {
+        if (count($_FILES['documents']['name']) > $maxFiles) {
+            throw new Exception('You can upload a maximum of 5 files.');
+        }
+
+        // Initialize fileinfo for MIME type detection
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+        foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
+            if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
+                if ($_FILES['documents']['size'][$key] > $maxFileSize) {
+                    throw new Exception('File size exceeds 10MB limit.');
+                }
+
+                // Validate MIME type and file extension
+                $mimeType = finfo_file($finfo, $tmp_name);
+                $fileName = $_FILES['documents']['name'][$key];
+                $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+
+                if ($mimeType !== 'application/pdf' || !is_pdf($fileName)) {
+                    throw new Exception('Only PDF files are allowed.');
+                }
+
+                // Generate a unique name for the file
+                $uniqueName = uniqid('doc_', true) . '.' . $fileExt;
+                $filePath = 'uploads/' . $uniqueName;
+
+                if (move_uploaded_file($tmp_name, $filePath)) {
+                    $insertDocQuery = "INSERT INTO booking_documents_info (booking_id, document_path) VALUES ('$bookingId', '$filePath')";
+                    if (!mysqli_query($mysqli, $insertDocQuery)) {
+                        throw new Exception('Error uploading document: ' . mysqli_error($mysqli));
+                    }
+                    $uploadedFiles[] = $filePath;
+                } else {
+                    throw new Exception('Error moving uploaded file.');
+                }
+            } else {
+                throw new Exception('File upload error: ' . $_FILES['documents']['error'][$key]);
+            }
+        }
+
+        // Close the fileinfo resource
+        finfo_close($finfo);
+    }
+
+    // Send email
+    $mail = new PHPMailer(true);
     $mail->SMTPDebug = 0;
     $mail->isSMTP();
     $mail->Host = 'em2.pwh-r1.com';
@@ -182,7 +197,7 @@ try {
 
     // Recipients
     $mail->setFrom($email, $name);
-    $mail->addAddress('devanshdogra9@gmail.com');
+    $mail->addAddress('devanshdogra@orientaloutsourcing.com');
 
     // Content
     $mail->isHTML(true);
@@ -199,6 +214,9 @@ try {
     }
 
     $mail->send();
+    
+    // Commit transaction if everything is successful
+    mysqli_commit($mysqli);
     echo json_encode(['status' => 'success', 'message' => 'Booking and email sent successfully!']);
 
     // Clean up uploaded files after sending email
@@ -206,7 +224,8 @@ try {
         unlink($filePath); // Remove file after sending
     }
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo]);
+    mysqli_rollback($mysqli); // Rollback transaction if an error occurs
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
 
 // Close the database connection

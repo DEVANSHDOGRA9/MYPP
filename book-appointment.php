@@ -6,15 +6,15 @@
     } 
     
 
-    $query = "SELECT holiday_date FROM holiday_info";
-$result = mysqli_query($mysqli, $query);
-$holidays = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $holidays[] = $row['holiday_date'];
-}
+//     $query = "SELECT holiday_date FROM holiday_info";
+// $result = mysqli_query($mysqli, $query);
+// $holidays = [];
+// while ($row = mysqli_fetch_assoc($result)) {
+//     $holidays[] = $row['holiday_date'];
+// }
 
-// Convert the array to a JSON format
-$holidaysJson = json_encode($holidays);
+// // Convert the array to a JSON format
+// $holidaysJson = json_encode($holidays);
     
     
     ?>
@@ -67,11 +67,13 @@ $holidaysJson = json_encode($holidays);
         </div>
         <div class="col-md-6">
             <!-- Alert container -->
-            <div id="alert-container"></div>
+            <!-- <div id="alert-container"></div> -->
 
             <form id="appointmentForm" class="appointment-form">
                 <h2>Book Appointment</h2>
                 <p>*Fields are mandatory</p>
+                <div id="alert-container"></div>
+
                 <div class="form-group">
                     <label for="name">Name <span class="required-star">*</span></label>
                     <input type="text" class="form-control" id="name" name="name">
@@ -126,7 +128,7 @@ $holidaysJson = json_encode($holidays);
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
     <script>
     $(document).ready(function() {
-        var holidays = <?php echo $holidaysJson; ?>;
+        
     // Set the minimum date to tomorrow for both startDate and endDate fields
     var today = new Date();
     var tomorrow = new Date(today);
@@ -223,11 +225,11 @@ $holidaysJson = json_encode($holidays);
         }
 
         // Holiday Validation
-        var selectedDate = $('#startDate').val();
-        if (holidays.includes(selectedDate)) {
-            $('#startDate-error').text('Cannot book on holidays.');
-            isValid = false;
-        }
+        // var selectedDate = $('#startDate').val();
+        // if (holidays.includes(selectedDate)) {
+        //     $('#startDate-error').text('Cannot book on holidays.');
+        //     isValid = false;
+        // }
 
         // File Upload Validation
         var files = $('#documents')[0].files;
@@ -274,19 +276,21 @@ $holidaysJson = json_encode($holidays);
                         setTimeout(function() {
                             $('.alert').alert('close');
                         }, 6000);
-                        $('#documents').val('');
+                         // Reset the form only on success
+                         $('#appointmentForm')[0].reset();
+                        $('#documents').val(''); // Clear the file input
                     } else {
                         $('#alert-container').html(
                             '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
                             response.message +
                             '</div>'
                         );
-                    
+                     
                         setTimeout(function() {
                             $('.alert').alert('close');
                         }, 6000);
                     }
-                        $('#appointmentForm')[0].reset();
+                      ;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $('#alert-container').html(
@@ -294,7 +298,7 @@ $holidaysJson = json_encode($holidays);
                         'There was an error booking the appointment. ' + textStatus + ': ' + errorThrown +
                         '</div>'
                     );
-                    $('#appointmentForm')[0].reset();
+                   
                     setTimeout(function() {
                         $('.alert').alert('close');
                     }, 3000);

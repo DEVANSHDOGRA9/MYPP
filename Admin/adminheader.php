@@ -8,7 +8,7 @@ include_once(__DIR__ . '/../config.php');
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
   <head><script src="./assets/js/color-modes.js"></script>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">

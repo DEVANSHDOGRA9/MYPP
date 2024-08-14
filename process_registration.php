@@ -181,7 +181,7 @@ function sendOTP($mysqli, $email, $otp) {
     $mail->Port       = 587;              // SMTP port (typically 587 for STARTTLS)
 
     // Sender and recipient settings
-    $mail->setFrom('devanshdogra@orientaloutsourcing.com', 'Registration wala otp');
+    $mail->setFrom('devanshdogra@orientaloutsourcing.com', 'Registration otp');
     $mail->addAddress($email); // Add a recipient
 
     // Email content
