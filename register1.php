@@ -1,3 +1,4 @@
+<!-- <div class="mpage_container"> -->
 <?php
 // Start session
 // session_start();
@@ -82,13 +83,13 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
                     <div class="form-group">
                         <label for="email">Email<span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email">
+                        <input type="email" class="form-control" id="email" name="email" autocomplete="password">
                         <div id="email_error" class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="password">Password (at least 6 characters)<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" aria-describedby="togglePassword">
+                            <input type="password" class="form-control" id="password" name="password" aria-describedby="togglePassword" autocomplete="password">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">Show</button>
                             </div>
@@ -99,7 +100,7 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="form-group">
                         <label for="confirm_password">Confirm Password<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" aria-describedby="toggleConfirmPassword">
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" aria-describedby="toggleConfirmPassword" autocomplete="password">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">Show</button>
                             </div>
@@ -113,11 +114,16 @@ if (empty($_SESSION['csrf_token'])) {
         </div>
     </div>
 </div>
-
+<?php
+// Include footer
+include "footer.php";
+?>
+<!-- </div> -->
 <!-- Loader Wrapper -->
 <!-- <div class="loader-wrapper">
     <div class="loader"></div>
 </div> -->
+<!-- <script src="ajax-load.js"></script> Include the AJAX load script -->
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script>
@@ -249,7 +255,4 @@ if (empty($_SESSION['csrf_token'])) {
     });
 </script>
 
-<?php
-// Include footer
-include "footer.php";
-?>
+

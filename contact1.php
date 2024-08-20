@@ -1,41 +1,13 @@
+<!-- <div class="mpage_container"> -->
 <?php
 $PAGE_TITLE = "CONTACT US";
 include_once 'header.php';
 // session_start();
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-} ?>
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title> -->
-
-    <style>
-        .required::after {
-            content: " *";
-            color: red;
-        }
-        .error-message {
-            color: red;
-            font-size: 0.875em;
-        }
-        
-
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
+} 
+?>
+ 
     <div class="container mt-5">
         <div class="row">
             <!-- Left Column -->
@@ -82,11 +54,17 @@ if (empty($_SESSION['csrf_token'])) {
             </div>
         </div>
     </div>
-
+    <?php include_once(__DIR__ . '/footer.php'); ?>
+<!-- </div> -->
     <!-- <div id="loader" ></div> -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script> -->
+    <!-- <script src="path/to/jquery.min.js"></script> Make sure jQuery is included -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <!-- <script src="ajax-load.js"></script> Include the AJAX load script -->
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
     <script>
+        console.log('Script loaded and executing');
         $(document).ready(function() {
             // Initialize jQuery Validation Engine
             $("#contactForm").validationEngine({
@@ -112,36 +90,47 @@ if (empty($_SESSION['csrf_token'])) {
 
                     // Submit form via AJAX
                     $.ajax({
-                        type: 'POST',
-                        url: 'save_contact_ajax1.php', // Adjust URL as needed
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.status == 'success') {
-                                $('#form-message').html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
-                                $('#contactForm')[0].reset(); // Clear form
-                            } else {
-                                $('#form-message').html('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            errormessage = xhr + status + error;
-                            $('#form-message').html('<div class="alert alert-danger" role="alert">There was an error while submitting the form. '+errormessage+'</div>');
-                        },
-                        // complete: function() {
-                        //     // Hide loader after AJAX request completes
-                        //     $('#loader').hide();
-                        // }
-                    });
-                }
-                // else {
-                //     $('#loader').hide();
-                // }
-            });
+                    type: 'POST',
+                    url: 'save_contact_ajax1.php', // Adjust URL as needed
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            $('#form-message').html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
+                        } else {
+                            $('#form-message').html('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                        }
+
+                        // Hide the message after 4 seconds
+                        setTimeout(function() {
+                            $('#form-message').html('');
+                        }, 4000);
+                        
+                        $('#contactForm')[0].reset(); // Clear form
+                    },
+                    error: function(xhr, status, error) {
+                        var errormessage = xhr.status + ': ' + error;
+                        $('#form-message').html('<div class="alert alert-danger" role="alert">There was an error while submitting the form. ' + errormessage + '</div>');
+                        
+                        // Hide the message after 4 seconds
+                        setTimeout(function() {
+                            $('#form-message').html('');
+                        }, 4000);
+                    },
+                    // complete: function() {
+                    //     // Hide loader after AJAX request completes
+                    //     $('#loader').hide();
+                    // }
+                });
+            }
+            // else {
+            //     $('#loader').hide();
+            // }
         });
+    });
     </script>
-    <?php include_once(__DIR__ . '/footer.php'); ?>
+ 
 <!-- </body>
 </html> -->

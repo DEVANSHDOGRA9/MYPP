@@ -1,9 +1,10 @@
 <?php
+session_start();
 include_once(__DIR__ . '/../config.php');
-// if (!isset($_SESSION['admin_id'])) {
-//   header('Location: adminlogin.php');
-//   exit();
-// }
+if (!isset($_SESSION['admin_id'])) {
+  header('Location: adminlogin.php');
+  exit();
+}
 ?>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">

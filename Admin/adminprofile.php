@@ -1,5 +1,5 @@
     <?php
-    session_start();
+    // session_start();
     ob_start();  // Start output buffering
     $PAGE_TITLE = "Admin Profile";
     include 'adminheader.php';

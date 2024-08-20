@@ -1,3 +1,4 @@
+<div class="mpage_container">
 <?php
  include 'adminheader.php';
 
@@ -106,8 +107,11 @@ $stmt->close();
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<?php
+include_once(__DIR__ . 'adminfooter.php');
+?>
+</div>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script>
     $(document).ready(function() {
         $('#profileForm').on('submit', function(event) {
@@ -245,6 +249,4 @@ $stmt->close();
         }
     });
 </script>
-<?php
-include_once(__DIR__ . 'adminfooter.php');
-?>
+

@@ -1,3 +1,4 @@
+<!-- <div class="mpage_container"> -->
 <?php
 // session_start(); // Ensure session is started
 $PAGE_TITLE = "Login";
@@ -28,13 +29,13 @@ $csrf_token = $_SESSION['csrf_token'];
         <form id="loginForm">
           <div class="form-group mb-3">
             <label for="email" class="required">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <input type="email" class="form-control" id="email" name="email" autocomplete="email">
             <span class="error-message" id="email-error"></span>
           </div>
           <div class="form-group mb-3">
             <label for="pwd" class="required">Password:</label>
             <div class="input-group">
-              <input type="password" class="form-control" id="pwd" name="pwd" required>
+            <input type="password" class="form-control" id="pwd" name="pwd" autocomplete="current-password">
               <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                 Show
               </button>
@@ -54,13 +55,14 @@ $csrf_token = $_SESSION['csrf_token'];
       </div>
     </div>
   </div>
-</div>
+  <?php include_once(__DIR__ . '/footer.php'); ?>
+<!-- </div> -->
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script> Font Awesome JS -->
-
+</div>
 <script>
   $(document).ready(function() {
     // Toggle password visibility
@@ -168,4 +170,4 @@ $csrf_token = $_SESSION['csrf_token'];
   }
 </style>
 
-<?php include_once(__DIR__ . '/footer.php'); ?>
+

@@ -1,3 +1,5 @@
+<!-- <div class="mpage_container"> -->
+
 <?php include_once(__DIR__ . '/header.php'); ?>
 
     <!-- Heading -->
@@ -74,3 +76,5 @@
         </div>
     </section>
 <?php include_once(__DIR__ . '/footer.php'); ?>
+<!-- <script src="ajax-load.js"></script> Include the AJAX load script -->
+<!-- </div> -->
